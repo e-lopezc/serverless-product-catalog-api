@@ -1,7 +1,11 @@
 # serverless-product-catalog-api
 AWS serverless Product Catalog API
 
-# Services to use:
+## Purpose
+
+## Architecture
+
+## Services to use:
 
 * AWS API Gateway for product catalog operations.
 * AWS Lambda to implemente the CRUD product operations.
