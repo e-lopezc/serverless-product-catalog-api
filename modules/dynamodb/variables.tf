@@ -32,12 +32,6 @@ variable "attribute_definitions" {
     name = string
     type = string
   }))
-  default = [
-    {
-      name = "VisitorId"
-      type = "S"
-    }
-  ]
 }
 
 variable "hash_key" {
