@@ -1,6 +1,6 @@
 output "dynamodb_table_id" {
   description = "ID of the DynamoDB table"
-  value       = aws_dynamodb_table.mycv_website_visitors.id
+  value       = aws_dynamodb_table.products_catalog_table.id
 }
 
 output "dynamodb_table_name" {
