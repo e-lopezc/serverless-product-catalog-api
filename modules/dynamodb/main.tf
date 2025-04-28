@@ -25,6 +25,7 @@ resource "aws_dynamodb_table" "products_catalog_table" {
   tags = {
     Name        = var.table_name
     Environment = var.environment
+    ManagedBy   = var.managed_by
   }
 
 }

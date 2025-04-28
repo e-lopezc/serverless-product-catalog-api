@@ -3,6 +3,12 @@ variable "environment" {
   type        = string
 }
 
+variable "managed_by" {
+  description = "managed by tag for the resource"
+  type        = string
+  default     = "terraform"
+}
+
 variable "table_name" {
   description = "The name of the DynamoDB table"
   type        = string
