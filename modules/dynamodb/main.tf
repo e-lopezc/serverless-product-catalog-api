@@ -1,4 +1,4 @@
-resource "aws_dynamodb_table" "mycv_website_visitors" {
+resource "aws_dynamodb_table" "products_catalog_table" {
   name           = var.table_name
   billing_mode   = var.billing_mode
   read_capacity  = var.billing_mode == "PROVISIONED" ? var.read_capacity_units : null
@@ -14,17 +14,17 @@ resource "aws_dynamodb_table" "mycv_website_visitors" {
     }
   }
 
-  tags = {
-    Name        = var.table_name
-    Environment = var.environment
-  }
-
   point_in_time_recovery {
     enabled = var.point_in_time_recovery # This will enable point-in-time recovery for data protection
   }
 
   server_side_encryption {
     enabled = var.server_side_encryption # For data security, we could enable encryption at rest
+  }
+
+  tags = {
+    Name        = var.table_name
+    Environment = var.environment
   }
 
 }
