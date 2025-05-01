@@ -1,14 +1,3 @@
-variable "environment" {
-  description = "environment (dev, staging, prod)"
-  type        = string
-}
-
-variable "managed_by" {
-  description = "managed by tag for the resource"
-  type        = string
-  default     = "terraform"
-}
-
 variable "table_name" {
   description = "The name of the DynamoDB table"
   type        = string
@@ -57,7 +46,7 @@ variable "hash_key" {
   description = "The name of the hash key attribute"
   type        = string
   validation {
-    condition     = var.has_key != null && var.kash_key != ""
+    condition     = var.hash_key != null && var.hash_key != ""
     error_message = "hash_key must not be null or empty."
   }
 }

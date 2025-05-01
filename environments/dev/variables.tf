@@ -19,7 +19,11 @@ variable "dynamodb_table_range_key" {
 }
 
 variable "dynamodb_attribute_definitions" {
-  description = ""
+  description = "All the attribute definitions for the table"
+  type = list(object({
+    name = string
+    type = string
+  }))
 }
 
 variable "dynamodb_global_secondary_indexes" {

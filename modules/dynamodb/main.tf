@@ -34,10 +34,4 @@ resource "aws_dynamodb_table" "products_catalog_table" {
     enabled = var.server_side_encryption # For data security, we could enable encryption at rest
   }
 
-  tags = {
-    Name        = var.table_name
-    Environment = var.environment
-    ManagedBy   = var.managed_by
-  }
-
 }
