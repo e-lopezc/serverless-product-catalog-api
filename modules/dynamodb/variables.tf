@@ -40,6 +40,19 @@ variable "attribute_definitions" {
   }))
 }
 
+variable "global_secondary_indexes" {
+  description = "List of global secondary indexes for the DynamoDB table"
+  type = list(object({
+    name            = string
+    hash_key        = string
+    range_key       = string
+    projection_type = string
+    read_capacity   = optional(number)
+    write_capacity  = optional(number)
+  }))
+  default = []
+}
+
 variable "hash_key" {
   description = "The name of the hash key attribute"
   type        = string

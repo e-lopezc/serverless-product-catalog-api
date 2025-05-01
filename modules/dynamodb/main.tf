@@ -14,6 +14,18 @@ resource "aws_dynamodb_table" "products_catalog_table" {
     }
   }
 
+  dynamic "global_secondary_index" {
+    for_each = var.global_secondary_indexes
+    content {
+      name            = global_secondary_index.value.name
+      hash_key        = global_secondary_index.value.hash_key
+      range_key       = global_secondary_index.value.range_key
+      projection_type = global_secondary_index.value.projection_type
+      read_capacity   = var.billing_mode == "PROVISIONED" ? lookup(global_secondary_index.value, "read_capacity", null) : null
+      write_capacity  = var.billing_mode == "PROVISIONED" ? lookup(global_secondary_index.value, "write_capacity", null) : null
+    }
+  }
+
   point_in_time_recovery {
     enabled = var.point_in_time_recovery # This will enable point-in-time recovery for data protection
   }
