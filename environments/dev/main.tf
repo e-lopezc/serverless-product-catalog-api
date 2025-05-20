@@ -7,3 +7,11 @@ module "dynamodb_backend_table" {
   hash_key                 = var.dynamodb_table_hash_key
   range_key                = var.dynamodb_table_range_key
 }
+
+module "iam_roles_and_policies" {
+  source                = "../../modules/iam"
+  environment           = var.environment
+  lambda_function_names = var.lambda_functions_names
+  dynamodb_table_arns   = ["${module.dynamodb_backend_table.dynamodb_table_arn}"]
+  depends_on            = [module.dynamodb_backend_table]
+}

@@ -37,3 +37,8 @@ variable "dynamodb_global_secondary_indexes" {
     write_capacity  = optional(number)
   }))
 }
+
+variable "lambda_functions_names" {
+  description = "Lambda functions names"
+  type        = list(string)
+}
