@@ -1,7 +1,7 @@
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_dir  = "${path.module}/src/${var.item_name}_crud"
-  output_path = "${path.module}/src/${var.item_name}_crud/${var.item_name}_crud_function.zip"
+  source_dir  = "${path.module}/src/${var.function_name}_crud"
+  output_path = "${path.module}/src/${var.function_name}_crud/${var.function_name}_crud_function.zip"
 }
 
 
