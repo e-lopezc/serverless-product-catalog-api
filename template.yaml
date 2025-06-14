@@ -1,0 +1,207 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Product Catalog API
+
+# Global configuration
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: python3.11
+    Environment:
+      Variables:
+        DYNAMODB_TABLE: !Ref ProductCatalogTable
+        AWS_REGION: !Ref AWS::Region
+
+# Parameters
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, staging, prod]
+
+# Resources
+Resources:
+  # DynamoDB Table (matches your Terraform definition)
+  ProductCatalogTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${Environment}-products-catalog"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: brand_id
+          AttributeType: S
+        - AttributeName: product_id
+          AttributeType: S
+        - AttributeName: GSI3PK
+          AttributeType: S
+        - AttributeName: GSI3SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI-1
+          KeySchema:
+            - AttributeName: SK
+              KeyType: HASH
+            - AttributeName: PK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: GSI-2
+          KeySchema:
+            - AttributeName: brand_id
+              KeyType: HASH
+            - AttributeName: product_id
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: GSI-3
+          KeySchema:
+            - AttributeName: GSI3PK
+              KeyType: HASH
+            - AttributeName: GSI3SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+  # Lambda Functions
+  BrandsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${Environment}-brands-handler"
+      CodeUri: src/
+      Handler: handlers.brands.lambda_handler
+      Events:
+        # GET /brands - List all brands
+        ListBrands:
+          Type: Api
+          Properties:
+            Path: /brands
+            Method: get
+        # POST /brands - Create brand
+        CreateBrand:
+          Type: Api
+          Properties:
+            Path: /brands
+            Method: post
+        # GET /brands/{id} - Get specific brand
+        GetBrand:
+          Type: Api
+          Properties:
+            Path: /brands/{id}
+            Method: get
+        # PUT /brands/{id} - Update brand
+        UpdateBrand:
+          Type: Api
+          Properties:
+            Path: /brands/{id}
+            Method: put
+        # DELETE /brands/{id} - Delete brand
+        DeleteBrand:
+          Type: Api
+          Properties:
+            Path: /brands/{id}
+            Method: delete
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductCatalogTable
+
+  CategoriesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${Environment}-categories-handler"
+      CodeUri: src/
+      Handler: handlers.categories.lambda_handler
+      Events:
+        ListCategories:
+          Type: Api
+          Properties:
+            Path: /categories
+            Method: get
+        CreateCategory:
+          Type: Api
+          Properties:
+            Path: /categories
+            Method: post
+        GetCategory:
+          Type: Api
+          Properties:
+            Path: /categories/{id}
+            Method: get
+        UpdateCategory:
+          Type: Api
+          Properties:
+            Path: /categories/{id}
+            Method: put
+        DeleteCategory:
+          Type: Api
+          Properties:
+            Path: /categories/{id}
+            Method: delete
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductCatalogTable
+
+  ProductsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${Environment}-products-handler"
+      CodeUri: src/
+      Handler: handlers.products.lambda_handler
+      Events:
+        ListProducts:
+          Type: Api
+          Properties:
+            Path: /products
+            Method: get
+        CreateProduct:
+          Type: Api
+          Properties:
+            Path: /products
+            Method: post
+        GetProduct:
+          Type: Api
+          Properties:
+            Path: /products/{id}
+            Method: get
+        UpdateProduct:
+          Type: Api
+          Properties:
+            Path: /products/{id}
+            Method: put
+        DeleteProduct:
+          Type: Api
+          Properties:
+            Path: /products/{id}
+            Method: delete
+        # Additional product endpoints
+        GetProductsByBrand:
+          Type: Api
+          Properties:
+            Path: /brands/{brand_id}/products
+            Method: get
+        GetProductsByCategory:
+          Type: Api
+          Properties:
+            Path: /categories/{category_id}/products
+            Method: get
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductCatalogTable
+
+# Outputs
+Outputs:
+  ApiGatewayUrl:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+
+  DynamoDBTable:
+    Description: "DynamoDB table name"
+    Value: !Ref ProductCatalogTable
