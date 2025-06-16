@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   # DynamoDB Local for development
   dynamodb-local:
@@ -9,7 +7,7 @@ services:
       - "8000:8000"
     command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-dbPath", "./data"]
     volumes:
-      - dynamodb-data:/home/dynamodblocal/data
+      - ./data:/home/dynamodblocal/data
     working_dir: /home/dynamodblocal
     environment:
       - AWS_ACCESS_KEY_ID=local
@@ -30,5 +28,3 @@ services:
     depends_on:
       - dynamodb-local
 
-volumes:
-  dynamodb-data:

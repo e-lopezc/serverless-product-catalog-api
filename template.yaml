@@ -6,7 +6,7 @@ Description: Product Catalog API
 Globals:
   Function:
     Timeout: 30
-    Runtime: python3.11
+    Runtime: python3.13
     Environment:
       Variables:
         DYNAMODB_TABLE: !Ref ProductCatalogTable

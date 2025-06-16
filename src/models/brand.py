@@ -2,7 +2,7 @@ import uuid
 import re
 from datetime import datetime
 from typing import Optional, Dict, Any
-from urllib.parse import urlparse
+import validators
 
 from utils.db_operations import db_client
 from utils.exceptions import ValidationError, NotFoundError, DuplicateError
@@ -258,16 +258,13 @@ class Brand:
         if not website:
             return  # Empty string is acceptable for optional field
 
-        try:
-            result = urlparse(website)
-            if not result.scheme or not result.netloc:
-                raise ValidationError("Invalid website URL format")
-
-            if result.scheme not in ['http', 'https']:
-                raise ValidationError("Website URL must use http or https protocol")
-
-        except Exception:
+        # Use validators library for robust URL validation
+        if not validators.url(website):
             raise ValidationError("Invalid website URL format")
+
+        # Additional check for http/https protocol
+        if not website.lower().startswith(('http://', 'https://')):
+            raise ValidationError("Website URL must use http or https protocol")
 
     @staticmethod
     def _name_exists(name: str, exclude_brand_id: Optional[str] = None) -> bool:
