@@ -184,6 +184,11 @@ ACCESS_PATTERNS = {
         'index': 'GSI-3',
         'keys': 'GSI3PK=BRAND_LIST, GSI3SK sorted by name'
     },
+    'list_categories_by_name': {
+        'operation': 'query',
+        'index': 'GSI-3',
+        'keys': 'GSI3PK=CATEGORY_LIST, GSI3SK sorted by name'
+    },
     'get_products_by_brand': {
         'operation': 'query',
         'index': 'GSI-2',

@@ -284,7 +284,7 @@ class Brand:
         # Query GSI-3 to find brands with similar names
         # We'll check case-insensitive by querying and then comparing
         try:
-            result = db_client.query_gsi3("BRAND_LIST", limit=100)  # Get all brands
+            result = db_client.query_gsi3(Brand.LIST_PREFIX, limit=100)  # Get all brands
 
             name_upper = name.strip().upper()
 
