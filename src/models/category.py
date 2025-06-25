@@ -69,7 +69,7 @@ class Category:
             return None
 
         pk = get_category_pk(category_id)
-        sk = get_category_pk(category_id)
+        sk = get_category_sk(category_id)
 
         return db_client.get_item(pk, sk)
 
@@ -249,7 +249,7 @@ class Category:
 
         Args:
             name: Category name to check
-            exclude_brand_id: Category ID to exclude from check (for updates)
+            exclude_category_id: Category ID to exclude from check (for updates)
 
         Returns:
             True if name exists, False otherwise

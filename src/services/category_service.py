@@ -70,7 +70,7 @@ class CategoryService:
         return Category.update(category_id, **updates)
 
     @staticmethod
-    def delete_brand(category_id: str) -> bool:
+    def delete_category(category_id: str) -> bool:
         """
         Delete a category
 
