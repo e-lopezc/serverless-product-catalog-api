@@ -104,7 +104,7 @@ class Category:
         if 'name' in updates:
             Category._validate_name(updates['name'])
             # Check if new name already exists (case-insensitive)
-            if Category._name_exists(updates['name'], exclude_brand_id=category_id):
+            if Category._name_exists(updates['name'], exclude_category_id=category_id):
                 raise DuplicateError(f"Category name '{updates['name']}' already exists")
 
         if 'description' in updates:
@@ -189,8 +189,7 @@ class Category:
 
         Args:
             name: Category name
-            description: Brand description
-            website: Brand website URL
+            description: Category description
 
         Raises:
             ValidationError: If validation fails
