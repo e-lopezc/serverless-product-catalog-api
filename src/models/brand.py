@@ -1,7 +1,7 @@
 import uuid
 import re
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, cast
 import validators
 
 from utils.db_operations import db_client
@@ -72,7 +72,8 @@ class Brand:
         pk = get_brand_pk(brand_id)
         sk = get_brand_sk(brand_id)
 
-        return db_client.get_item(pk, sk)
+        result = db_client.get_item(pk, sk)
+        return cast(Optional[Dict[str, Any]], result)
 
     @staticmethod
     def update(brand_id: str, **updates) -> Dict[str, Any]:
@@ -124,7 +125,8 @@ class Brand:
         pk = get_brand_pk(brand_id)
         sk = get_brand_sk(brand_id)
 
-        return db_client.update_item(pk, sk, updates)
+        result = db_client.update_item(pk, sk, updates)
+        return cast(Dict[str, Any], result)
 
     @staticmethod
     def delete(brand_id: str) -> bool:

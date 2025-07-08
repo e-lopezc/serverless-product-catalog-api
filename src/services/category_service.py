@@ -1,5 +1,5 @@
 from typing import Dict, Any, Optional
-from models.category import Category
+from models import Category
 from utils.exceptions import ValidationError, NotFoundError, DuplicateError
 
 

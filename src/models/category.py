@@ -1,7 +1,7 @@
 import uuid
 import re
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, cast
 
 from utils.db_operations import db_client
 from utils.exceptions import ValidationError, NotFoundError, DuplicateError
@@ -71,7 +71,8 @@ class Category:
         pk = get_category_pk(category_id)
         sk = get_category_sk(category_id)
 
-        return db_client.get_item(pk, sk)
+        result = db_client.get_item(pk, sk)
+        return cast(Optional[Dict[str, Any]], result)
 
     @staticmethod
     def update(category_id: str, **updates) -> Dict[str, Any]:
@@ -121,7 +122,8 @@ class Category:
         pk = get_category_pk(category_id)
         sk = get_category_sk(category_id)
 
-        return db_client.update_item(pk, sk, updates)
+        result = db_client.update_item(pk, sk, updates)
+        return cast(Dict[str, Any], result)
 
     @staticmethod
     def delete(category_id: str) -> bool:

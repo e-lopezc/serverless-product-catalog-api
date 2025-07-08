@@ -1,5 +1,5 @@
 from typing import Dict, Any, Optional
-from models.brand import Brand
+from models import Brand
 from utils.exceptions import ValidationError, NotFoundError, DuplicateError
 
 
