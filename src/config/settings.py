@@ -137,7 +137,7 @@ def create_category_item(category_id, name, description=None, parent_category_id
     return item
 
 def create_product_item(product_id, name, brand_id, category_id, price,
-                       description=None, sku=None, stock_quantity=0, images=None):
+                       description=None, stock_quantity=0, images=None):
     """Create a product item structure"""
     from datetime import datetime
 
@@ -161,8 +161,7 @@ def create_product_item(product_id, name, brand_id, category_id, price,
 
     if description:
         item['description'] = description
-    if sku:
-        item['sku'] = sku
+
     if images:
         item['images'] = images
 

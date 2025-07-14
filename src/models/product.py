@@ -21,8 +21,7 @@ class Product:
 
     @staticmethod
     def create(name: str, brand_id: str, category_id: str, price: float,
-               description: Optional[str] = None, sku: Optional[str] = None,
-               stock_quantity: int = 0, images: Optional[List[str]] = None) -> Dict[str, Any]:
+               description: Optional[str] = None, stock_quantity: int = 0, images: Optional[List[str]] = None) -> Dict[str, Any]:
         """
         Create a new product item
 
@@ -32,7 +31,6 @@ class Product:
             category_id: Category ID (required, must exist)
             price: Product price (required, must be positive)
             description: Product description (optional)
-            sku: Stock Keeping Unit (optional, must be unique if provided)
             stock_quantity: Stock quantity (default: 0)
             images: List of image URLs (optional)
 
@@ -41,11 +39,12 @@ class Product:
 
         Raises:
             ValidationError: If validation fails
-            DuplicateError: If SKU already exists
             NotFoundError: If brand_id or category_id don't exist
         """
         # Validate input data
-        Product._validate_data(name, brand_id, category_id, price, description, sku, stock_quantity, images)
+        Product._validate_data(name, brand_id, category_id, price, description,
+            stock_quantity, images
+        )
 
         # Check if brand exists
         if not Product._brand_exists(brand_id):
@@ -55,17 +54,13 @@ class Product:
         if not Product._category_exists(category_id):
             raise NotFoundError(f"Category with ID '{category_id}' not found")
 
-        # Check if SKU already exists (if provided)
-        if sku and Product._sku_exists(sku):
-            raise DuplicateError(f"Product with SKU '{sku}' already exists")
-
         # Generate unique product ID
         product_id = Product._generate_id()
 
         # Create product item
         product_item = create_product_item(
             product_id, name, brand_id, category_id, price,
-            description, sku, stock_quantity, images
+            description, stock_quantity, images
         )
 
         # Save to database
@@ -100,7 +95,7 @@ class Product:
 
         Args:
             product_id: Product ID
-            **updates: Fields to update (name, brand_id, category_id, price, description, sku, stock_quantity, images)
+            **updates: Fields to update (name, brand_id, category_id, price, description, stock_quantity, images)
 
         Returns:
             Updated product item
@@ -108,14 +103,13 @@ class Product:
         Raises:
             NotFoundError: If product doesn't exist
             ValidationError: If validation fails
-            DuplicateError: If trying to update to existing SKU
         """
         # Check if product exists
         if not Product.exists(product_id):
             raise NotFoundError(f"Product with ID '{product_id}' not found")
 
         # Validate updates
-        allowed_fields = {'name', 'brand_id', 'category_id', 'price', 'description', 'sku', 'stock_quantity', 'images'}
+        allowed_fields = {'name', 'brand_id', 'category_id', 'price', 'description', 'stock_quantity', 'images'}
         invalid_fields = set(updates.keys()) - allowed_fields
         if invalid_fields:
             raise ValidationError(f"Invalid fields: {', '.join(invalid_fields)}")
@@ -139,12 +133,6 @@ class Product:
 
         if 'description' in updates:
             Product._validate_description(updates['description'])
-
-        if 'sku' in updates:
-            Product._validate_sku(updates['sku'])
-            # Check if new SKU already exists
-            if updates['sku'] and Product._sku_exists(updates['sku'], exclude_product_id=product_id):
-                raise DuplicateError(f"Product with SKU '{updates['sku']}' already exists")
 
         if 'stock_quantity' in updates:
             Product._validate_stock_quantity(updates['stock_quantity'])
@@ -250,34 +238,6 @@ class Product:
         """
         return db_client.get_products_by_category(category_id, limit, last_evaluated_key)
 
-    @staticmethod
-    def get_by_sku(sku: str) -> Optional[Dict[str, Any]]:
-        """
-        Get a product by SKU
-
-        Args:
-            sku: Stock Keeping Unit
-
-        Returns:
-            Product item or None if not found
-        """
-        if not sku:
-            return None
-
-        # Since we don't have a direct SKU index, we need to scan/query
-        # This is not optimal for large datasets, but works for the current design
-        try:
-            # Get all products and filter by SKU
-            # In a production system, you might want to add a GSI for SKU lookup
-            result = db_client.list_entities_by_type(Product.ENTITY_PREFIX, limit=1000)
-
-            for item in result.get('items', []):
-                if item.get('sku') == sku:
-                    return item
-
-            return None
-        except Exception:
-            return None
 
     # Helper methods
     @staticmethod
@@ -287,7 +247,7 @@ class Product:
 
     @staticmethod
     def _validate_data(name: str, brand_id: str, category_id: str, price: float,
-                      description: Optional[str] = None, sku: Optional[str] = None,
+                      description: Optional[str] = None,
                       stock_quantity: int = 0, images: Optional[List[str]] = None) -> None:
         """
         Validate product data
@@ -298,7 +258,6 @@ class Product:
             category_id: Category ID
             price: Product price
             description: Product description
-            sku: Stock Keeping Unit
             stock_quantity: Stock quantity
             images: List of image URLs
 
@@ -312,9 +271,6 @@ class Product:
 
         if description is not None:
             Product._validate_description(description)
-
-        if sku is not None:
-            Product._validate_sku(sku)
 
         Product._validate_stock_quantity(stock_quantity)
 
@@ -422,28 +378,6 @@ class Product:
         if len(description) > 1000:
             raise ValidationError("Product description cannot exceed 1000 characters")
 
-    @staticmethod
-    def _validate_sku(sku: str) -> None:
-        """Validate product SKU"""
-        if sku is None:
-            return  # SKU is optional
-
-        if not isinstance(sku, str):
-            raise ValidationError("SKU must be a string")
-
-        sku = sku.strip()
-        if not sku:
-            return  # Empty string is acceptable for optional field
-
-        if len(sku) < 3:
-            raise ValidationError("SKU must be at least 3 characters long")
-
-        if len(sku) > 50:
-            raise ValidationError("SKU cannot exceed 50 characters")
-
-        # Check for valid SKU characters (alphanumeric, hyphens, underscores)
-        if not re.match(r'^[a-zA-Z0-9\-_]+$', sku):
-            raise ValidationError("SKU can only contain letters, numbers, hyphens, and underscores")
 
     @staticmethod
     def _validate_stock_quantity(stock_quantity: int) -> None:
@@ -504,43 +438,4 @@ class Product:
             sk = get_category_sk(category_id)
             return db_client.check_item_exists(pk, sk)
         except Exception:
-            return False
-
-    @staticmethod
-    def _sku_exists(sku: str, exclude_product_id: Optional[str] = None) -> bool:
-        """
-        Check if a SKU already exists
-
-        Args:
-            sku: SKU to check
-            exclude_product_id: Product ID to exclude from check (for updates)
-
-        Returns:
-            True if SKU exists, False otherwise
-        """
-        if not sku:
-            return False
-
-        try:
-            # Get all products and check for SKU collision
-            # This is not optimal for large datasets, but works for current design
-            result = db_client.list_entities_by_type(Product.ENTITY_PREFIX, limit=1000)
-
-            sku_upper = sku.strip().upper()
-
-            for item in result.get('items', []):
-                existing_sku = item.get('sku')
-                existing_product_id = item.get('product_id')
-
-                # Skip if this is the product being updated
-                if exclude_product_id and existing_product_id == exclude_product_id:
-                    continue
-
-                if existing_sku and existing_sku.strip().upper() == sku_upper:
-                    return True
-
-            return False
-
-        except Exception:
-            # If query fails, assume SKU doesn't exist to avoid blocking creation
             return False

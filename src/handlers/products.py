@@ -22,7 +22,6 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     - DELETE /products/{product_id} - Delete a product
     - GET /products/by-brand/{brand_id} - List products by brand
     - GET /products/by-category/{category_id} - List products by category
-    - GET /products/by-sku/{sku} - Get product by SKU
     - PATCH /products/{product_id}/stock - Update product stock
     """
 
@@ -31,7 +30,6 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     product_id = path_parameters.get('id')
     brand_id = path_parameters.get('brand_id')
     category_id = path_parameters.get('category_id')
-    sku = path_parameters.get('sku')
     resource_path = event.get('resource', '')
 
     print(f"Processing {http_method} request for products")
@@ -52,11 +50,6 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 return bad_request_response("Category ID is required")
             return handle_products_by_category(event, category_id)
 
-        elif '/by-sku/' in resource_path:
-            # GET /products/by-sku/{sku}
-            if not sku:
-                return bad_request_response("SKU is required")
-            return handle_product_by_sku(event, sku)
 
         elif '/stock' in resource_path:
             # PATCH /products/{product_id}/stock
@@ -168,16 +161,6 @@ def handle_products_by_category(event: Dict[str, Any], category_id: str) -> Dict
 
     products_data = ProductService.list_products_by_category(category_id, limit, last_evaluated_key)
     return success_response(products_data)
-
-
-def handle_product_by_sku(event: Dict[str, Any], sku: str) -> Dict[str, Any]:
-    """Handle GET /products/by-sku/{sku}"""
-
-    product = ProductService.get_product_by_sku(sku)
-    if not product:
-        return not_found_response("Product not found")
-
-    return success_response(product)
 
 
 def handle_stock_update(event: Dict[str, Any], product_id: str) -> Dict[str, Any]:

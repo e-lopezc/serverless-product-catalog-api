@@ -1,5 +1,5 @@
 from typing import Dict, Any, Optional
-from models import Product
+from models.product import Product
 from utils.exceptions import ValidationError, NotFoundError
 
 
@@ -19,7 +19,6 @@ class ProductService:
 
         Raises:
             ValidationError: If validation fails
-            DuplicateError: If SKU already exists
             NotFoundError: If brand_id or category_id don't exist
         """
         name = data.get('name', '').strip()
@@ -44,12 +43,6 @@ class ProductService:
             if not description:
                 description = None
 
-        sku = data.get('sku')
-        if sku:
-            sku = sku.strip()
-            if not sku:
-                sku = None
-
         stock_quantity = data.get('stock_quantity', 0)
         images = data.get('images')
 
@@ -59,7 +52,6 @@ class ProductService:
             category_id=category_id,
             price=price,
             description=description,
-            sku=sku,
             stock_quantity=stock_quantity,
             images=images
         )
@@ -77,18 +69,6 @@ class ProductService:
         """
         return Product.get(product_id)
 
-    @staticmethod
-    def get_product_by_sku(sku: str) -> Optional[Dict[str, Any]]:
-        """
-        Get a product by SKU
-
-        Args:
-            sku: Stock Keeping Unit
-
-        Returns:
-            Product data or None if not found
-        """
-        return Product.get_by_sku(sku)
 
     @staticmethod
     def update_product(product_id: str, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
@@ -104,7 +84,6 @@ class ProductService:
 
         Raises:
             ValidationError: If validation fails
-            DuplicateError: If trying to update to existing SKU
             NotFoundError: If brand_id or category_id don't exist
         """
         # Prepare updates dict
@@ -129,14 +108,6 @@ class ProductService:
                 if not description:
                     description = None
             updates['description'] = description
-
-        if 'sku' in data:
-            sku = data['sku']
-            if sku:
-                sku = sku.strip()
-                if not sku:
-                    sku = None
-            updates['sku'] = sku
 
         if 'stock_quantity' in data:
             updates['stock_quantity'] = data['stock_quantity']
