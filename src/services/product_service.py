@@ -43,7 +43,8 @@ class ProductService:
             if not description:
                 description = None
 
-        stock_quantity = data.get('stock_quantity', 0)
+        stock_quantity = int(data.get('stock_quantity', 0))
+
         images = data.get('images')
 
         return Product.create(
@@ -110,7 +111,7 @@ class ProductService:
             updates['description'] = description
 
         if 'stock_quantity' in data:
-            updates['stock_quantity'] = data['stock_quantity']
+            updates['stock_quantity'] = int(data['stock_quantity'])
 
         if 'images' in data:
             updates['images'] = data['images']
@@ -216,7 +217,7 @@ class ProductService:
         if not product:
             raise NotFoundError(f"Product with ID '{product_id}' not found")
 
-        current_stock = product.get('stock_quantity', 0)
+        current_stock = int(product.get('stock_quantity', 0))
         new_stock = current_stock + quantity_change
 
         if new_stock < 0:

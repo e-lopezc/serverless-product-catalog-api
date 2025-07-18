@@ -317,13 +317,17 @@ class DynamoDbClient:
             return obj
 
     def _convert_decimal_to_float(self, obj):
-        """Convert Decimal values back to float for JSON serialization"""
+        """Convert Decimal values back to float for JSON serialization, preserving integers"""
         if isinstance(obj, dict):
             return {k: self._convert_decimal_to_float(v) for k, v in obj.items()}
         elif isinstance(obj, list):
             return [self._convert_decimal_to_float(item) for item in obj]
         elif isinstance(obj, Decimal):
-            return float(obj)
+            # Check if the Decimal represents a whole number
+            if obj % 1 == 0:
+                return int(obj)
+            else:
+                return float(obj)
         else:
             return obj
 

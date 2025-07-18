@@ -5,7 +5,7 @@ from typing import Optional, Dict, Any, List, cast
 from decimal import Decimal
 
 from utils.db_operations import db_client
-from utils.exceptions import ValidationError, NotFoundError, DuplicateError
+from utils.exceptions import ValidationError, NotFoundError
 from config.settings import (
     PRODUCT_PREFIX,
     create_product_item,
@@ -384,6 +384,11 @@ class Product:
         """Validate stock quantity"""
         if stock_quantity is None:
             raise ValidationError("Stock quantity is required")
+
+        if isinstance(stock_quantity, float):
+            if not stock_quantity.is_integer():
+                raise ValidationError("Stock quantity must be a whole number")
+            stock_quantity = int(stock_quantity)
 
         if not isinstance(stock_quantity, int):
             raise ValidationError("Stock quantity must be an integer")
