@@ -63,8 +63,16 @@ class Product:
             description, stock_quantity, images
         )
 
-        # Save to database
+        # Create product list item for GSI-3 queries
+        from config.settings import create_product_list_item
+        product_list_item = create_product_list_item(
+            product_id, name, brand_id, category_id, price,
+            description, stock_quantity, images
+        )
+
+        # Save both items to database
         db_client.put_item(product_item)
+        db_client.put_item(product_list_item)
 
         return product_item
 
@@ -153,6 +161,18 @@ class Product:
         result = db_client.update_item(pk, sk, updates)
         if result is None:
             raise NotFoundError(f"Product with ID '{product_id}' not found")
+
+        # Also update the product list item
+        list_pk = f"PRODUCT_LIST#{product_id}"
+        list_sk = f"PRODUCT_LIST#{product_id}"
+        list_updates = updates.copy()
+
+        # Update GSI3SK if name is being updated for sorting
+        if 'name' in updates:
+            list_updates['GSI3SK'] = updates['name'].upper()
+
+        db_client.update_item(list_pk, list_sk, list_updates)
+
         return cast(Dict[str, Any], result)
 
     @staticmethod
@@ -172,7 +192,14 @@ class Product:
         pk = get_product_pk(product_id)
         sk = get_product_sk(product_id)
 
+        # Delete main product item
         deleted_item = db_client.delete_item(pk, sk)
+
+        # Delete product list item
+        list_pk = f"PRODUCT_LIST#{product_id}"
+        list_sk = f"PRODUCT_LIST#{product_id}"
+        db_client.delete_item(list_pk, list_sk)
+
         return deleted_item is not None
 
     @staticmethod
@@ -197,7 +224,7 @@ class Product:
     @staticmethod
     def list_all(limit: int = 50, last_evaluated_key: Optional[Dict] = None) -> Dict[str, Any]:
         """
-        List all products using GSI-1
+        List all products using GSI-3 PRODUCT_LIST
 
         Args:
             limit: Maximum number of products to return
@@ -206,7 +233,7 @@ class Product:
         Returns:
             Dict with 'items' and 'last_evaluated_key'
         """
-        return db_client.list_entities_by_type(Product.ENTITY_PREFIX, limit, last_evaluated_key)
+        return db_client.list_products_by_name(limit, last_evaluated_key)
 
     @staticmethod
     def list_by_brand(brand_id: str, limit: int = 50, last_evaluated_key: Optional[Dict] = None) -> Dict[str, Any]:

@@ -19,12 +19,20 @@ class DynamoDbClient:
         import os
         endpoint_url = os.getenv('DYNAMODB_ENDPOINT')
 
+        # Check for local development indicators
+        endpoint_url = os.getenv('DYNAMODB_ENDPOINT')
+        is_sam_local = os.getenv('AWS_SAM_LOCAL') == 'true'
+
+        print(f"DYNAMODB_ENDPOINT: {endpoint_url}")
+        print(f"AWS_SAM_LOCAL: {is_sam_local}")
+        print(f"TABLE_NAME: {TABLE_NAME}")
+
         if endpoint_url:
             # Local development
             self.dynamodb = boto3.resource(
                 'dynamodb',
                 region_name=AWS_REGION,
-                endpoint_url=endpoint_url
+                endpoint_url=endpoint_url,
             )
         else:
             # Production
@@ -243,6 +251,17 @@ class DynamoDbClient:
         """
         return self.query_gsi3(
             gsi3_pk="CATEGORY_LIST",
+            limit=limit,
+            last_evaluated_key=last_evaluated_key
+        )
+
+    def list_products_by_name(self, limit=50, last_evaluated_key=None):
+        """
+        List products sorted by name using GSI-3
+        Query where GSI3PK = "PRODUCT_LIST"
+        """
+        return self.query_gsi3(
+            gsi3_pk="PRODUCT_LIST",
             limit=limit,
             last_evaluated_key=last_evaluated_key
         )

@@ -167,6 +167,36 @@ def create_product_item(product_id, name, brand_id, category_id, price,
 
     return item
 
+def create_product_list_item(product_id, name, brand_id, category_id, price,
+                            description=None, stock_quantity=0, images=None):
+    """Create a product list item for GSI-3 PRODUCT_LIST queries"""
+    from datetime import datetime
+
+    item = {
+        PK_FIELD: f"PRODUCT_LIST#{product_id}",
+        SK_FIELD: f"PRODUCT_LIST#{product_id}",
+        # GSI-3 for listing all products
+        GSI3_PK: 'PRODUCT_LIST',
+        GSI3_SK: name.upper(),  # For sorting products by name
+        'entity_type': 'product_list',
+        'product_id': product_id,
+        'name': name,
+        'brand_id': brand_id,
+        'category_id': category_id,
+        'price': price,
+        'stock_quantity': stock_quantity,
+        'created_at': datetime.utcnow().isoformat(),
+        'updated_at': datetime.utcnow().isoformat()
+    }
+
+    if description:
+        item['description'] = description
+
+    if images:
+        item['images'] = images
+
+    return item
+
 # Access Pattern Documentation
 ACCESS_PATTERNS = {
     'get_brand_by_id': {
