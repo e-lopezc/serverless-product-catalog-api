@@ -19,14 +19,6 @@ class DynamoDbClient:
         import os
         endpoint_url = os.getenv('DYNAMODB_ENDPOINT')
 
-        # Check for local development indicators
-        endpoint_url = os.getenv('DYNAMODB_ENDPOINT')
-        is_sam_local = os.getenv('AWS_SAM_LOCAL') == 'true'
-
-        print(f"DYNAMODB_ENDPOINT: {endpoint_url}")
-        print(f"AWS_SAM_LOCAL: {is_sam_local}")
-        print(f"TABLE_NAME: {TABLE_NAME}")
-
         if endpoint_url:
             # Local development
             self.dynamodb = boto3.resource(
