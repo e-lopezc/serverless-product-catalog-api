@@ -11,6 +11,7 @@ Globals:
       Variables:
         DYNAMODB_TABLE: !Ref ProductCatalogTable
         AWS_REGION: !Ref AWS::Region
+        DYNAMODB_ENDPOINT: http://localhost:8000
 
 # Parameters
 Parameters:
@@ -176,6 +177,11 @@ Resources:
           Properties:
             Path: /products/{id}
             Method: put
+        UpdateProductStock:
+          Type: Api
+          Properties:
+            Path: /products/{id}/stock
+            Method: patch
         DeleteProduct:
           Type: Api
           Properties:
@@ -185,12 +191,12 @@ Resources:
         GetProductsByBrand:
           Type: Api
           Properties:
-            Path: /brands/{brand_id}/products
+            Path: /products/by-brand/{brand_id}
             Method: get
         GetProductsByCategory:
           Type: Api
           Properties:
-            Path: /categories/{category_id}/products
+            Path: /products/by-category/{category_id}
             Method: get
       Policies:
         - DynamoDBCrudPolicy:
