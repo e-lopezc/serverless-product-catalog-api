@@ -1,0 +1,6 @@
+# Production Requirements - Pinned versions for stability
+boto3==1.35.50
+botocore==1.35.50
+typing-extensions==4.9.0
+certifi>=2023.11.17
+urllib3>=1.26.18,<3.0.0
