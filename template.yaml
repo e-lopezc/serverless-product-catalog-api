@@ -12,6 +12,7 @@ Globals:
         DYNAMODB_TABLE: !Ref ProductCatalogTable
         AWS_REGION: !Ref AWS::Region
         DYNAMODB_ENDPOINT: http://localhost:8000
+        LOG_LEVEL: !Ref LogLevel
 
 # Parameters
 Parameters:
@@ -19,6 +20,11 @@ Parameters:
     Type: String
     Default: dev
     AllowedValues: [dev, staging, prod]
+  LogLevel:
+    Type: String
+    Default: INFO
+    AllowedValues: [DEBUG, INFO, WARNING, ERROR, CRITICAL]
+    Description: Log level for Lambda functions
 
 # Resources
 Resources:

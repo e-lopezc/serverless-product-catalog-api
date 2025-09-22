@@ -8,6 +8,10 @@ from utils.response import (
     parse_json_body, get_query_parameter
 )
 from utils.exceptions import ValidationError, NotFoundError, DuplicateError
+from utils.logger import setup_logger, log_request_info
+
+# Set up logger
+logger = setup_logger(__name__)
 
 
 def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
@@ -32,9 +36,10 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     category_id = path_parameters.get('category_id')
     resource_path = event.get('resource', '')
 
-    print(f"Processing {http_method} request for products")
-    print(f"Resource path: {resource_path}")
-    print(f"Path parameters: {path_parameters}")
+    # Log request information
+    log_request_info(logger, event)
+
+    logger.debug(f"Product ID: {product_id}, Brand ID: {brand_id}, Category ID: {category_id}")
 
     try:
         # Handle different resource paths
@@ -113,17 +118,19 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 return bad_request_response(f"Method {http_method} not allowed")
 
     except ValidationError as e:
+        logger.warning(f"Validation error: {str(e)}")
         return bad_request_response(str(e))
     except DuplicateError as e:
+        logger.warning(f"Duplicate error: {str(e)}")
         return conflict_response(str(e))
     except NotFoundError as e:
+        logger.info(f"Not found: {str(e)}")
         return not_found_response(str(e))
     except ValueError as e:
+        logger.warning(f"Value error: {str(e)}")
         return bad_request_response(str(e))
     except Exception as e:
-        print(f"Unexpected error in products handler: {str(e)}")
-        import traceback
-        traceback.print_exc()
+        logger.error(f"Unexpected error in products handler: {str(e)}", exc_info=True)
         return server_error_response("An unexpected error occurred")
 
 

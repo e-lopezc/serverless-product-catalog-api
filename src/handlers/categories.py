@@ -9,6 +9,10 @@ from utils.response import (
     parse_json_body, get_query_parameter
 )
 from utils.exceptions import ValidationError, NotFoundError, DuplicateError
+from utils.logger import setup_logger, log_request_info
+
+# Set up logger
+logger = setup_logger(__name__)
 
 
 def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
@@ -23,13 +27,14 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     - DELETE /categories/{category_id} - Delete a category
     """
 
+    # Log request information
+    log_request_info(logger, event)
+
     http_method = event.get('httpMethod')
     path_parameters = event.get('pathParameters') or {}
     category_id = path_parameters.get('id')
 
-    print(f"Processing {http_method} request for categories")
-    print(f"Path parameters: {path_parameters}")
-    print(f"Category ID: {category_id}")
+    logger.debug(f"Category ID extracted: {category_id}")
 
     try:
         if http_method == 'GET':
@@ -86,15 +91,17 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             return bad_request_response(f"Method {http_method} not allowed")
 
     except ValidationError as e:
+        logger.warning(f"Validation error: {str(e)}")
         return bad_request_response(str(e))
     except DuplicateError as e:
+        logger.warning(f"Duplicate error: {str(e)}")
         return conflict_response(str(e))
     except NotFoundError as e:
+        logger.info(f"Not found: {str(e)}")
         return not_found_response(str(e))
     except ValueError as e:
+        logger.warning(f"Value error: {str(e)}")
         return bad_request_response(str(e))
     except Exception as e:
-        print(f"Unexpected error in categories handler: {str(e)}")
-        import traceback
-        traceback.print_exc()
+        logger.error(f"Unexpected error in categories handler: {str(e)}", exc_info=True)
         return server_error_response("An unexpected error occurred")
