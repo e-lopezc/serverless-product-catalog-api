@@ -4,9 +4,7 @@ from unittest.mock import Mock, patch, MagicMock
 from typing import Dict, Any
 
 # Import the handler function and related modules
-import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+
 
 from handlers.categories import lambda_handler
 from utils.exceptions import ValidationError, NotFoundError, DuplicateError

@@ -5,11 +5,6 @@ Run this to test the product functionality locally
 """
 
 import os
-import sys
-
-# Add src to path so we can import our modules
-src_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'src')
-sys.path.insert(0, src_path)
 
 # Set environment variables for local testing
 os.environ['DYNAMODB_TABLE'] = 'products_catalog'
