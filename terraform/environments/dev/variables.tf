@@ -42,3 +42,9 @@ variable "lambda_functions_names" {
   description = "Lambda functions names"
   type        = list(string)
 }
+
+variable "lambda_deployment_packages" {
+  description = "Map of Lambda function names to their deployment package paths"
+  type        = map(string)
+  default     = {}
+}
