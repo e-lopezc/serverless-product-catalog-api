@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug SAM Local API",
+            "type": "python",
+            "request": "attach",
+            "port": 5858,
+            "host": "localhost",
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}/src",
+                    "remoteRoot": "/var/task"
+                }
+            ]
+        },
+        {
+            "name": "Debug Brands Handler",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/handlers/brands.py",
+            "env": {
+                "DYNAMODB_TABLE": "products_catalog",
+                "AWS_REGION": "us-east-1",
+                "DYNAMODB_ENDPOINT": "http://localhost:8000"
+            },
+            "args": []
+        }
+    ]
+}
