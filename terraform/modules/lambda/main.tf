@@ -17,7 +17,6 @@ resource "aws_lambda_function" "api_function" {
   environment {
     variables = merge(var.environment_variables, {
       DYNAMODB_TABLE = var.dynamodb_table_name
-      AWS_REGION     = data.aws_region.current.name
     })
   }
 
@@ -46,9 +45,7 @@ resource "aws_lambda_function" "api_function" {
   depends_on = [var.iam_role]
 
   tags = {
-    Environment = var.environment
-    Function    = each.value
-    ManagedBy   = "terraform"
+    Function = each.value
   }
 }
 
@@ -60,9 +57,7 @@ resource "aws_cloudwatch_log_group" "lambda_log_group" {
   retention_in_days = 14
 
   tags = {
-    Environment = var.environment
-    Function    = each.value
-    ManagedBy   = "terraform"
+    Function = each.value
   }
 }
 

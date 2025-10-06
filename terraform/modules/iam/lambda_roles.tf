@@ -11,10 +11,6 @@ resource "aws_iam_role" "lambda_execution_role" {
     }]
   })
 
-  tags = {
-    Environment = var.environment
-    ManagedBy   = "terraform"
-  }
 }
 
 # DynamoDB access policy
@@ -43,11 +39,6 @@ resource "aws_iam_policy" "lambda_dynamodb_access" {
       ])
     }]
   })
-
-  tags = {
-    Environment = var.environment
-    ManagedBy   = "terraform"
-  }
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_dynamodb" {
@@ -72,11 +63,6 @@ resource "aws_iam_policy" "lambda_cloudwatch_logs" {
       Resource = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${var.environment}-*:*"
     }]
   })
-
-  tags = {
-    Environment = var.environment
-    ManagedBy   = "terraform"
-  }
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_cloudwatch_logs" {
@@ -100,11 +86,6 @@ resource "aws_iam_policy" "lambda_xray" {
       Resource = "*"
     }]
   })
-
-  tags = {
-    Environment = var.environment
-    ManagedBy   = "terraform"
-  }
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_xray" {
