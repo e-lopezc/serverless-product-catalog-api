@@ -49,8 +49,8 @@ variable "cors_configuration" {
     max_age       = number
   })
   default = {
-    allow_origins = ["*"]                                                   # Allow all origins (restrict in production)
-    allow_methods = ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]   # All CRUD methods
+    allow_origins = ["*"]                                                # Allow all origins (restrict in production)
+    allow_methods = ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"] # All CRUD methods
     allow_headers = ["Content-Type", "Authorization", "X-Amz-Date", "X-Api-Key", "X-Amz-Security-Token"]
     max_age       = 300 # Cache preflight requests for 5 minutes
   }
