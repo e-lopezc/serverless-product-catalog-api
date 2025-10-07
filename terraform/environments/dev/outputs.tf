@@ -37,3 +37,29 @@ output "lambda_function_invoke_arns" {
   description = "Invoke ARNs for API Gateway integration"
   value       = module.lambda_functions.lambda_function_invoke_arns
 }
+
+# API Gateway outputs
+output "api_gateway_id" {
+  description = "API Gateway ID"
+  value       = module.api_gateway.api_id
+}
+
+output "api_gateway_endpoint" {
+  description = "API Gateway base endpoint"
+  value       = module.api_gateway.api_endpoint
+}
+
+output "api_gateway_invoke_url" {
+  description = "API Gateway invoke URL (use this to call your API)"
+  value       = module.api_gateway.api_invoke_url
+}
+
+output "api_gateway_arn" {
+  description = "API Gateway ARN"
+  value       = module.api_gateway.api_arn
+}
+
+output "api_gateway_stage_name" {
+  description = "API Gateway stage name"
+  value       = module.api_gateway.stage_name
+}

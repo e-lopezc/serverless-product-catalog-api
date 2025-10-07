@@ -47,3 +47,29 @@ module "lambda_functions" {
   # reserved_concurrent_executions = -1  # Default is fine
   # layers = []                          # Not needed for your dependencies
 }
+
+module "api_gateway" {
+  source = "../../modules/api_gateway"
+
+  environment = var.environment
+  api_name    = var.api_gateway_name
+
+  # Convert list to map for API Gateway module
+  lambda_function_names = {
+    for name in var.lambda_functions_names :
+    name => "${var.environment}-${name}"
+  }
+
+  lambda_invoke_arns = module.lambda_functions.lambda_function_invoke_arns
+
+  # Optional: override defaults if needed
+  stage_name         = var.api_gateway_stage_name
+  enable_auto_deploy = var.api_gateway_auto_deploy
+  enable_access_logs = var.api_gateway_enable_logs
+  log_retention_days = var.api_gateway_log_retention_days
+
+  cors_configuration = var.api_gateway_cors_config
+  throttle_settings  = var.api_gateway_throttle_settings
+
+  depends_on = [module.lambda_functions]
+}
