@@ -29,12 +29,14 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     - PATCH /products/{product_id}/stock - Update product stock
     """
 
-    http_method = event.get('httpMethod')
+    # Support both API Gateway v1 (REST API) and v2 (HTTP API) event formats
+    http_method = event.get('httpMethod') or event.get('requestContext', {}).get('http', {}).get('method')
     path_parameters = event.get('pathParameters') or {}
     product_id = path_parameters.get('id')
     brand_id = path_parameters.get('brand_id')
     category_id = path_parameters.get('category_id')
-    resource_path = event.get('resource', '')
+    # For HTTP API v2, use rawPath or routeKey; for REST API use resource
+    resource_path = event.get('resource') or event.get('rawPath', '')
 
     # Log request information
     log_request_info(logger, event)

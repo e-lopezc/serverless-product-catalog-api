@@ -12,7 +12,7 @@ resource "aws_apigatewayv2_api" "api" {
   }
 }
 
-# Lambda Integrations
+# Lambda Integrations - Created first
 resource "aws_apigatewayv2_integration" "lambda" {
   for_each = var.lambda_function_names
 
@@ -24,7 +24,10 @@ resource "aws_apigatewayv2_integration" "lambda" {
   timeout_milliseconds   = 30000
 }
 
-# Routes: GET /resource - List all
+# Routes are created sequentially to avoid AWS API Gateway concurrent modification errors
+# Order of creation: GET -> POST -> GET/{id} -> PUT/{id} -> DELETE/{id} -> PATCH/{id}
+
+# Route 1: GET /resource - List all
 resource "aws_apigatewayv2_route" "get_all" {
   for_each = var.lambda_function_names
 
@@ -33,49 +36,89 @@ resource "aws_apigatewayv2_route" "get_all" {
   target    = "integrations/${aws_apigatewayv2_integration.lambda[each.key].id}"
 }
 
-# Routes: POST /resource - Create
+# Time delay to prevent concurrent modification
+resource "time_sleep" "wait_after_get_all" {
+  depends_on = [aws_apigatewayv2_route.get_all]
+  create_duration = "2s"
+}
+
+# Route 2: POST /resource - Create (waits for GET to complete)
 resource "aws_apigatewayv2_route" "post" {
   for_each = var.lambda_function_names
 
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "POST /${each.key}"
   target    = "integrations/${aws_apigatewayv2_integration.lambda[each.key].id}"
+  
+  depends_on = [time_sleep.wait_after_get_all]
 }
 
-# Routes: GET /resource/{id} - Get by ID
+# Time delay to prevent concurrent modification
+resource "time_sleep" "wait_after_post" {
+  depends_on = [aws_apigatewayv2_route.post]
+  create_duration = "2s"
+}
+
+# Route 3: GET /resource/{id} - Get by ID (waits for POST to complete)
 resource "aws_apigatewayv2_route" "get_by_id" {
   for_each = var.lambda_function_names
 
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "GET /${each.key}/{id}"
   target    = "integrations/${aws_apigatewayv2_integration.lambda[each.key].id}"
+  
+  depends_on = [time_sleep.wait_after_post]
 }
 
-# Routes: PUT /resource/{id} - Update
+# Time delay to prevent concurrent modification
+resource "time_sleep" "wait_after_get_by_id" {
+  depends_on = [aws_apigatewayv2_route.get_by_id]
+  create_duration = "2s"
+}
+
+# Route 4: PUT /resource/{id} - Update (waits for GET/{id} to complete)
 resource "aws_apigatewayv2_route" "put" {
   for_each = var.lambda_function_names
 
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "PUT /${each.key}/{id}"
   target    = "integrations/${aws_apigatewayv2_integration.lambda[each.key].id}"
+  
+  depends_on = [time_sleep.wait_after_get_by_id]
 }
 
-# Routes: DELETE /resource/{id} - Delete
+# Time delay to prevent concurrent modification
+resource "time_sleep" "wait_after_put" {
+  depends_on = [aws_apigatewayv2_route.put]
+  create_duration = "2s"
+}
+
+# Route 5: DELETE /resource/{id} - Delete (waits for PUT to complete)
 resource "aws_apigatewayv2_route" "delete" {
   for_each = var.lambda_function_names
 
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "DELETE /${each.key}/{id}"
   target    = "integrations/${aws_apigatewayv2_integration.lambda[each.key].id}"
+  
+  depends_on = [time_sleep.wait_after_put]
 }
 
-# Routes: PATCH /resource/{id} - Partial update
+# Time delay to prevent concurrent modification
+resource "time_sleep" "wait_after_delete" {
+  depends_on = [aws_apigatewayv2_route.delete]
+  create_duration = "2s"
+}
+
+# Route 6: PATCH /resource/{id} - Partial update (waits for DELETE to complete)
 resource "aws_apigatewayv2_route" "patch" {
   for_each = var.lambda_function_names
 
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "PATCH /${each.key}/{id}"
   target    = "integrations/${aws_apigatewayv2_integration.lambda[each.key].id}"
+  
+  depends_on = [time_sleep.wait_after_delete]
 }
 
 # Lambda Permissions
