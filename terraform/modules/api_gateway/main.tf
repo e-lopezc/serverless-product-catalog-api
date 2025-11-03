@@ -82,6 +82,24 @@ resource "aws_apigatewayv2_route" "products_stock" {
   target    = "integrations/${aws_apigatewayv2_integration.lambda["products"].id}"
 }
 
+# Special route for products by brand query
+resource "aws_apigatewayv2_route" "products_by_brand" {
+  count = contains(keys(var.lambda_function_names), "products") ? 1 : 0
+
+  api_id    = aws_apigatewayv2_api.api.id
+  route_key = "GET /products/by-brand/{brand_id}"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda["products"].id}"
+}
+
+# Special route for products by category query
+resource "aws_apigatewayv2_route" "products_by_category" {
+  count = contains(keys(var.lambda_function_names), "products") ? 1 : 0
+
+  api_id    = aws_apigatewayv2_api.api.id
+  route_key = "GET /products/by-category/{category_id}"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda["products"].id}"
+}
+
 # Lambda Permissions
 resource "aws_lambda_permission" "api_gateway" {
   for_each = var.lambda_function_names
