@@ -30,7 +30,8 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     # Log request information
     log_request_info(logger, event)
 
-    http_method = event.get('httpMethod')
+    # Support both API Gateway v1 (REST API) and v2 (HTTP API) event formats
+    http_method = event.get('httpMethod') or event.get('requestContext', {}).get('http', {}).get('method')
     path_parameters = event.get('pathParameters') or {}
     category_id = path_parameters.get('id')
 

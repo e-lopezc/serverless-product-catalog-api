@@ -170,6 +170,11 @@ class Product:
         # Update GSI3SK if name is being updated for sorting
         if 'name' in updates:
             list_updates['GSI3SK'] = updates['name'].upper()
+        
+        # Ensure product_list_item keeps GSI3PK = "PRODUCT_LIST" for list queries
+        # (Don't copy the category-based GSI3PK from the main product item)
+        if 'GSI3PK' in list_updates:
+            del list_updates['GSI3PK']
 
         db_client.update_item(list_pk, list_sk, list_updates)
 
