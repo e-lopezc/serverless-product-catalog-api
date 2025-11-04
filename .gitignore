@@ -66,6 +66,7 @@ venv.bak/
 node_modules/
 *.log
 local_settings.py
+env.json
 
 # Local .terraform directories
 **/.terraform/*
