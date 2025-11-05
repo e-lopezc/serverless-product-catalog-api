@@ -236,64 +236,35 @@ python tests/e2e/run_all_e2e_tests.py
 
 ## Production Enhancements
 
-Improvements needed for production:
+This project demonstrates core serverless architecture patterns, Infrastructure as Code, and testing best practices. It's production-capable for small to medium workloads, but here's what I'd add for larger scale deployments:
 
-**Reliability & Error Handling:**
-- Dead Letter Queue (DLQ) for Lambda functions to handle temporal failures and poison messages
-- Exponential backoff and retry logic with jitter
-- Circuit breaker pattern for fault tolerance
-- Lambda reserved concurrency to prevent throttling
+**Observability & Reliability**
+- Activate X-Ray tracing (already configured in Terraform with IAM permissions)
+- CloudWatch alarms for error rates and latency spikes
+- Dead Letter Queues for failed Lambda invocations
+- Circuit breakers and retry logic with exponential backoff
 
-**Security:**
-- Cognito authentication and authorization
-- API key management with usage plans
-- WAF integration for API Gateway
-- Secrets Manager for sensitive configuration
-- VPC endpoints for private API access
-- Request signing and validation
+**Security**
+- Authentication via Cognito or API Gateway authorizers
+- AWS WAF rules for common attack patterns
+- Secrets Manager for sensitive config (currently using environment variables)
 
-**Performance:**
-- DynamoDB DAX for caching frequently accessed data
-- Lambda provisioned concurrency for critical paths
-- Connection pooling optimization
-- API Gateway response caching
+**Deployment Strategy**
+- CI/CD pipeline with automated tests (unit/integration/e2e tests are ready)
+- Blue-green or canary deployments for zero-downtime releases
+- Multi-environment promotion flow (dev → staging → prod)
 
-**Observability:**
-- X-Ray distributed tracing (configured, needs activation)
-- CloudWatch alarms for error rates, latency, and throttles
-- Custom CloudWatch metrics for business KPIs
-- Structured logging with correlation IDs
-- Dashboards for operational visibility
+**Performance at Scale**
+- DynamoDB DAX caching layer for hot data
+- Lambda provisioned concurrency to eliminate cold starts
+- API Gateway response caching for read-heavy endpoints
 
-**Storage & CDN:**
-- S3 integration for product images with versioning
-- CloudFront CDN distribution for global performance
-- S3 lifecycle policies for cost optimization
+**Data Durability**
+- Point-in-time recovery for DynamoDB (easy toggle)
+- Automated backups and retention policies
+- Cross-region replication if needed for DR
 
-**CI/CD & Deployment:**
-- Automated testing pipeline
-- Blue-green or canary deployments
-- Automated rollback on errors
-- Infrastructure drift detection
-- Multi-environment promotion (dev → staging → prod)
-
-**API Management:**
-- OpenAPI/Swagger documentation
-- API versioning strategy
-- Rate limiting and throttling per client
-- Request/response schema validation
-- Usage quotas and burst limits
-
-**Data Management:**
-- DynamoDB point-in-time recovery
-- Automated backups to S3
-- Data retention policies
-- Cross-region replication for DR
-
-**Compliance:**
-- CloudTrail audit logs
-- Encryption at rest and in transit
-- Cost allocation tags
+The focus here was building a solid foundation with proper testing, modular Terraform code, and local development workflow. The architecture is sound and scales well—the items above are incremental improvements you'd layer on based on actual usage patterns and requirements
 
 ## License
 
