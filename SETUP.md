@@ -456,7 +456,3 @@ Ensure your AWS user has the following permissions:
 - [DynamoDB Documentation](https://docs.aws.amazon.com/dynamodb/)
 - [Python 3.13 Documentation](https://docs.python.org/3.13/)
 - [AWS Lambda Python Runtime](https://docs.aws.amazon.com/lambda/latest/dg/python-programming-model.html)
-
----
-
-For questions or issues, please check the troubleshooting section or create an issue in the project repository.

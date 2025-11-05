@@ -36,17 +36,13 @@ class Category:
             ValidationError: If validation fails
             DuplicateError: If category name already exists
         """
-        # Validate input data
         Category._validate_data(name, description)
 
-        # Check if category name already exists (case-insensitive)
         if Category._name_exists(name):
             raise DuplicateError(f"Category name '{name}' already exists")
 
-        # Generate unique brand ID
         category_id = Category._generate_id()
 
-        # Create category item
         category_item = create_category_item(category_id, name, description)
 
         # Save to database
@@ -91,20 +87,16 @@ class Category:
             ValidationError: If validation fails
             DuplicateError: If trying to update to existing name
         """
-        # Check if the category exists
         if not Category.exists(category_id):
             raise NotFoundError(f"Category with ID '{category_id}' not found")
 
-        # Validate updates
         allowed_fields = {'name', 'description'}
         invalid_fields = set(updates.keys()) - allowed_fields
         if invalid_fields:
             raise ValidationError(f"Invalid fields: {', '.join(invalid_fields)}")
 
-        # Validate individual fields
         if 'name' in updates:
             Category._validate_name(updates['name'])
-            # Check if new name already exists (case-insensitive)
             if Category._name_exists(updates['name'], exclude_category_id=category_id):
                 raise DuplicateError(f"Category name '{updates['name']}' already exists")
 

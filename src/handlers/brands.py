@@ -32,7 +32,7 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     # Support both API Gateway v1 (REST API) and v2 (HTTP API) event formats
     http_method = event.get('httpMethod') or event.get('requestContext', {}).get('http', {}).get('method')
     path_parameters = event.get('pathParameters') or {}
-    brand_id = path_parameters.get('id')  # Note: SAM template uses {id} not {brand_id}
+    brand_id = path_parameters.get('id')
 
     logger.debug(f"Brand ID extracted: {brand_id}")
 

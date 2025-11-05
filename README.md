@@ -1,6 +1,6 @@
 # Serverless Product Catalog API
 
-A serverless REST API for product catalog management built with AWS services and Infrastructure as Code. This portfolio project demonstrates cloud-native architecture and serverless development practices.
+A serverless REST API for product catalog management built with AWS services and Infrastructure as Code.
 
 [![AWS](https://img.shields.io/badge/AWS-Cloud-orange)](https://aws.amazon.com/)
 [![Python](https://img.shields.io/badge/Python-3.13-blue)](https://www.python.org/)
@@ -18,37 +18,34 @@ A serverless REST API for product catalog management built with AWS services and
 - [Documentation](#documentation)
 - [Production Enhancements](#production-enhancements)
 
-## 🎯 Overview
+## Overview
 
-This serverless API provides a complete product catalog management system with support for brands, categories, and products. Built to showcase cloud engineering expertise with:
+Product catalog API with support for brands, categories, and products.
 
-- **Serverless Architecture** - No server management, automatic scaling
-- **Infrastructure as Code** - Complete Terraform modules for reproducible deployments
-- **Event-Driven Design** - Lambda functions triggered by API Gateway
-- **Single-Table Design** - Optimized DynamoDB data modeling with GSIs
-- **Local Development** - Full local development environment with DynamoDB Local
-- **Comprehensive Testing** - Unit, integration, and end-to-end test suites
+- **Serverless** - Lambda and API Gateway, automatic scaling
+- **Infrastructure as Code** - Terraform modules
+- **Single-Table Design** - DynamoDB with Global Secondary Indexes
+- **Local Development** - Docker Compose with DynamoDB Local
+- **Testing** - Unit, integration, and E2E test suites
 
-## ✨ Features
+## Features
 
 ### Core Functionality
-- ✅ **Brand Management** - CRUD operations for product brands
-- ✅ **Category Management** - CRUD operations for product categories
-- ✅ **Product Management** - Full product lifecycle management
-- ✅ **Relationship Management** - Products linked to brands and categories
-- ✅ **Stock Management** - Dedicated endpoint for inventory updates
-- ✅ **Query Capabilities** - List products by brand or category
-- ✅ **Pagination Support** - Efficient handling of large datasets
+- Brand Management - CRUD operations
+- Category Management - CRUD operations
+- Product Management - Full lifecycle with stock updates
+- Relationships - Products linked to brands and categories
+- Query by brand or category
+- Pagination for large datasets
 
-### Technical Features
-- ✅ **RESTful API Design** - Standard HTTP methods and status codes
-- ✅ **Input Validation** - Comprehensive request validation
-- ✅ **Error Handling** - Detailed error messages and proper status codes
-- ✅ **CORS Support** - Cross-origin resource sharing configured
-- ✅ **Logging & Monitoring** - CloudWatch integration for observability
-- ✅ **Local Development** - Docker-based local testing environment
+### Technical
+- RESTful API design
+- Input validation
+- Error handling with proper status codes
+- CORS enabled
+- CloudWatch logging
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────┐     ┌──────────────────┐     ┌─────────────────┐
@@ -63,31 +60,31 @@ This serverless API provides a complete product catalog management system with s
                                               └─────────────────┘
 ```
 
-**Key Architectural Decisions:**
+**Design Decisions:**
 
-- **HTTP API Gateway** - Lower latency and cost compared to REST API
-- **Single Lambda per Resource** - Separate functions for brands, categories, products
-- **Single Table Design** - DynamoDB best practice with GSIs for queries
-- **Python 3.13** - Latest Python runtime for Lambda
+- HTTP API Gateway - Lower latency and cost vs REST API
+- Lambda per resource - Separate functions for brands, categories, products
+- Single table design - DynamoDB best practice with GSIs
+- Python 3.13 - Latest Lambda runtime
 
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### AWS Services
-- **API Gateway (HTTP API v2)** - RESTful API routing and management
-- **Lambda** - Serverless compute for business logic
-- **DynamoDB** - NoSQL database with single-table design
-- **CloudWatch** - Logging and monitoring
-- **IAM** - Security and access management
+- API Gateway (HTTP API v2) - API routing
+- Lambda - Serverless compute
+- DynamoDB - NoSQL database
+- CloudWatch - Logging and monitoring
+- IAM - Security and permissions
 
-### Development Tools
-- **Python 3.13** - Application runtime
-- **AWS SAM CLI** - Local development and deployment
-- **Terraform** - Infrastructure as Code (modular design)
-- **Docker/Docker Compose** - Local DynamoDB and development
-- **pytest** - Testing framework
+### Tools
+- Python 3.13
+- AWS SAM CLI - Local development and deployment
+- Terraform - Infrastructure as Code
+- Docker Compose - Local DynamoDB
+- pytest - Testing
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Brands
 | Method | Endpoint | Description |
@@ -121,7 +118,7 @@ This serverless API provides a complete product catalog management system with s
 
 See [API_GATEWAY_TESTING.md](API_GATEWAY_TESTING.md) for detailed API testing guide with examples.
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -177,16 +174,16 @@ terraform plan
 terraform apply -parallelism=1 -var-file=dev.tfvars
 ```
 
-See [SETUP.md](SETUP.md) for comprehensive setup instructions.
+See [SETUP.md](SETUP.md) for detailed setup instructions.
 
-## 📚 Documentation
+## Documentation
 
-- **[SETUP.md](SETUP.md)** - Comprehensive setup and development guide
-- **[API_GATEWAY_TESTING.md](API_GATEWAY_TESTING.md)** - API testing guide with curl examples
-- **[terraform/environments/dev/DEPLOYMENT_NOTES.md](terraform/environments/dev/DEPLOYMENT_NOTES.md)** - Terraform deployment notes
-- **[tests/e2e/README.md](tests/e2e/README.md)** - End-to-end testing documentation
+- [SETUP.md](SETUP.md) - Setup and development guide
+- [API_GATEWAY_TESTING.md](API_GATEWAY_TESTING.md) - API testing with examples
+- [terraform/environments/dev/DEPLOYMENT_NOTES.md](terraform/environments/dev/DEPLOYMENT_NOTES.md) - Terraform deployment notes
+- [tests/e2e/README.md](tests/e2e/README.md) - E2E testing
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 serverless-product-catalog-api/
@@ -211,7 +208,7 @@ serverless-product-catalog-api/
 └── docker-compose.dev.yml       # Local development services
 ```
 
-## 🧪 Testing
+## Testing
 
 ### Run Unit Tests
 ```bash
@@ -229,17 +226,17 @@ export API_BASE_URL=https://your-api-id.execute-api.region.amazonaws.com/dev
 python tests/e2e/run_all_e2e_tests.py
 ```
 
-## 🔒 Security Best Practices
+## Security
 
-- ✅ No hardcoded credentials
-- ✅ IAM roles with least privilege principle
-- ✅ Input validation on all endpoints
-- ✅ HTTPS-only API access
-- ✅ CloudWatch logging for audit trails
+- No hardcoded credentials
+- IAM roles with least privilege
+- Input validation on all endpoints
+- HTTPS-only
+- CloudWatch audit logging
 
-## 📈 Future Enhancements
+## Production Enhancements
 
-To make this production-ready, the following enhancements are recommended:
+Improvements needed for production:
 
 **Reliability & Error Handling:**
 - Dead Letter Queue (DLQ) for Lambda functions to handle temporal failures and poison messages
@@ -293,20 +290,15 @@ To make this production-ready, the following enhancements are recommended:
 - Data retention policies
 - Cross-region replication for DR
 
-**Compliance & Audit:**
-- CloudTrail for API audit logging
-- Data encryption at rest and in transit
-- Compliance with security standards (SOC2, HIPAA if needed)
-- Cost allocation tags for billing
+**Compliance:**
+- CloudTrail audit logs
+- Encryption at rest and in transit
+- Cost allocation tags
 
-## 📝 License
+## License
 
-This project is available for educational and portfolio purposes.
-
-## 👤 Author
-
-Built to learn about AWS services like API Gateway, DynamoDB and Lambda as well as cloud engineering and serverless architectures.
+Educational and portfolio use.
 
 ---
 
-**Note:** This project uses AWS services which may incur costs. Remember to clean up resources after testing.
+AWS services incur costs. Clean up resources after testing.

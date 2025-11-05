@@ -37,17 +37,13 @@ class Brand:
             ValidationError: If validation fails
             DuplicateError: If brand name already exists
         """
-        # Validate input data
         Brand._validate_data(name, description, website)
 
-        # Check if brand name already exists (case-insensitive)
         if Brand._name_exists(name):
             raise DuplicateError(f"Brand name '{name}' already exists")
 
-        # Generate unique brand ID
         brand_id = Brand._generate_id()
 
-        # Create brand item
         brand_item = create_brand_item(brand_id, name, description, website)
 
         # Save to database
@@ -92,20 +88,16 @@ class Brand:
             ValidationError: If validation fails
             DuplicateError: If trying to update to existing name
         """
-        # Check if brand exists
         if not Brand.exists(brand_id):
             raise NotFoundError(f"Brand with ID '{brand_id}' not found")
 
-        # Validate updates
         allowed_fields = {'name', 'description', 'website'}
         invalid_fields = set(updates.keys()) - allowed_fields
         if invalid_fields:
             raise ValidationError(f"Invalid fields: {', '.join(invalid_fields)}")
 
-        # Validate individual fields
         if 'name' in updates:
             Brand._validate_name(updates['name'])
-            # Check if new name already exists (case-insensitive)
             if Brand._name_exists(updates['name'], exclude_brand_id=brand_id):
                 raise DuplicateError(f"Brand name '{updates['name']}' already exists")
 

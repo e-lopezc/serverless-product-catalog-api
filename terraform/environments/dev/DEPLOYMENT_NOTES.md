@@ -1,9 +1,5 @@
 # API Gateway Deployment Notes
 
-## Concurrent Modification Fix
-
-The API Gateway module has been cleaned up to remove the `time_sleep` workarounds.
-
 ### To Deploy:
 
 Use the `-parallelism=1` flag to prevent concurrent modification errors:
