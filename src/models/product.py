@@ -41,29 +41,23 @@ class Product:
             ValidationError: If validation fails
             NotFoundError: If brand_id or category_id don't exist
         """
-        # Validate input data
         Product._validate_data(name, brand_id, category_id, price, description,
             stock_quantity, images
         )
 
-        # Check if brand exists
         if not Product._brand_exists(brand_id):
             raise NotFoundError(f"Brand with ID '{brand_id}' not found")
 
-        # Check if category exists
         if not Product._category_exists(category_id):
             raise NotFoundError(f"Category with ID '{category_id}' not found")
 
-        # Generate unique product ID
         product_id = Product._generate_id()
 
-        # Create product item
         product_item = create_product_item(
             product_id, name, brand_id, category_id, price,
             description, stock_quantity, images
         )
 
-        # Create product list item for GSI-3 queries
         from config.settings import create_product_list_item
         product_list_item = create_product_list_item(
             product_id, name, brand_id, category_id, price,
@@ -112,17 +106,14 @@ class Product:
             NotFoundError: If product doesn't exist
             ValidationError: If validation fails
         """
-        # Check if product exists
         if not Product.exists(product_id):
             raise NotFoundError(f"Product with ID '{product_id}' not found")
 
-        # Validate updates
         allowed_fields = {'name', 'brand_id', 'category_id', 'price', 'description', 'stock_quantity', 'images'}
         invalid_fields = set(updates.keys()) - allowed_fields
         if invalid_fields:
             raise ValidationError(f"Invalid fields: {', '.join(invalid_fields)}")
 
-        # Validate individual fields
         if 'name' in updates:
             Product._validate_name(updates['name'])
 
@@ -167,7 +158,6 @@ class Product:
         list_sk = f"PRODUCT_LIST#{product_id}"
         list_updates = updates.copy()
 
-        # Update GSI3SK if name is being updated for sorting
         if 'name' in updates:
             list_updates['GSI3SK'] = updates['name'].upper()
         
@@ -197,10 +187,8 @@ class Product:
         pk = get_product_pk(product_id)
         sk = get_product_sk(product_id)
 
-        # Delete main product item
         deleted_item = db_client.delete_item(pk, sk)
 
-        # Delete product list item
         list_pk = f"PRODUCT_LIST#{product_id}"
         list_sk = f"PRODUCT_LIST#{product_id}"
         db_client.delete_item(list_pk, list_sk)
