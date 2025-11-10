@@ -264,7 +264,7 @@ This project demonstrates core serverless architecture patterns, Infrastructure 
 - Automated backups and retention policies
 - Cross-region replication if needed for DR
 
-The focus here was building a solid foundation with proper testing, modular Terraform code, and local development workflow. The architecture is sound and scales well—the items above are incremental improvements you'd layer on based on actual usage patterns and requirements
+The focus here was building a solid foundation with proper testing, modular Terraform code, and local development workflow. The architecture is modular and scales well — the items above are incremental improvements you'd layer on based on actual usage patterns and requirements
 
 ## License
 
