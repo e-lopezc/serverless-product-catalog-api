@@ -236,7 +236,7 @@ python tests/e2e/run_all_e2e_tests.py
 
 ## Production Enhancements
 
-This project demonstrates core serverless architecture patterns, Infrastructure as Code, and testing best practices. It's production-capable for small to medium workloads, but here's what I'd add for larger scale deployments:
+This project demonstrates core serverless architecture patterns, Infrastructure as Code, and testing best practices but here's what I'd add for production ready deployments:
 
 **Observability & Reliability**
 - Activate X-Ray tracing (already configured in Terraform with IAM permissions)
