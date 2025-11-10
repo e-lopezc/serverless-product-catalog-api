@@ -160,13 +160,7 @@ See [SERVERLESS_API_TESTING.md](SERVERLESS_API_TESTING.md) for detailed API test
 
 ### Deployment
 
-#### Option 1: AWS SAM
-```bash
-sam build
-sam deploy --guided
-```
-
-#### Option 2: Terraform
+#### Terraform
 ```bash
 cd terraform/environments/dev
 terraform init
