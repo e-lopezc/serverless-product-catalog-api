@@ -116,7 +116,7 @@ Product catalog API with support for brands, categories, and products.
 | GET | `/products/by-brand/{brand_id}` | List products by brand |
 | GET | `/products/by-category/{category_id}` | List products by category |
 
-See [API_GATEWAY_TESTING.md](API_GATEWAY_TESTING.md) for detailed API testing guide with examples.
+See [SERVERLESS_API_TESTING.md](SERVERLESS_API_TESTING.md) for detailed API testing guide with examples.
 
 ## Getting Started
 
@@ -179,7 +179,7 @@ See [SETUP.md](SETUP.md) for detailed setup instructions.
 ## Documentation
 
 - [SETUP.md](SETUP.md) - Setup and development guide
-- [API_GATEWAY_TESTING.md](API_GATEWAY_TESTING.md) - API testing with examples
+- [SERVERLESS_API_TESTING.md](SERVERLESS_API_TESTING.md) - API testing with examples
 - [terraform/environments/dev/DEPLOYMENT_NOTES.md](terraform/environments/dev/DEPLOYMENT_NOTES.md) - Terraform deployment notes
 - [tests/e2e/README.md](tests/e2e/README.md) - E2E testing
 

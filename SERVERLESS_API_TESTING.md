@@ -162,13 +162,13 @@ aws logs tail "/aws/apigateway/dev-product-catalog-api" --follow
 
 ```bash
 # Products handler
-aws logs tail "/aws/lambda/dev-products-handler" --follow
+aws logs tail "/aws/lambda/dev-products" --follow
 
 # Brands handler
-aws logs tail "/aws/lambda/dev-brands-handler" --follow
+aws logs tail "/aws/lambda/dev-brands" --follow
 
 # Categories handler
-aws logs tail "/aws/lambda/dev-categories-handler" --follow
+aws logs tail "/aws/lambda/dev-categories" --follow
 ```
 
 ## 6. Common Issues
@@ -182,13 +182,13 @@ Products require a category_id. Create a category first (see Step 2 above).
 ### 403 Forbidden
 Check Lambda permissions:
 ```bash
-aws lambda get-policy --function-name dev-products-handler
+aws lambda get-policy --function-name dev-products
 ```
 
 ### 502 Bad Gateway
 Check Lambda function logs for errors:
 ```bash
-aws logs tail "/aws/lambda/dev-products-handler" --since 5m
+aws logs tail "/aws/lambda/dev-products" --since 5m
 ```
 
 ### CORS Errors (from browser)
