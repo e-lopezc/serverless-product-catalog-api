@@ -52,8 +52,8 @@ Product catalog API with support for brands, categories, and products.
 │   Client    │────▶│  API Gateway     │────▶│  Lambda         │
 │  (HTTP)     │     │  (HTTP API v2)   │     │  Functions      │
 └─────────────┘     └──────────────────┘     └────────┬────────┘
-                                                       │
-                                                       ▼
+                                                      |
+                                                      ▼
                                               ┌─────────────────┐
                                               │   DynamoDB      │
                                               │  (Single Table) │
