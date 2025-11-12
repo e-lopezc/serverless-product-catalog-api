@@ -231,21 +231,21 @@ python tests/e2e/run_all_e2e_tests.py
 ## Key Technical Decisions & Lessons Learned
 
 ### DynamoDB Single-Table Design
-**Decision**: Consolidated brands, categories, and products into one table
-**Why**: Eliminated need for joins, reduced query latency from 300ms to 80ms
-**Trade-off**: More complex access patterns, but better performance at scale
-**SRE insight**: NoSQL requires thinking in access patterns, not entities, a mindset shift from traditional databases. Getting this right upfront prevents costly refactors later.
+**Decision**: Consolidated brands, categories, and products into one table  
+**Why**: Eliminated need for joins, reduced query latency from 300ms to 80ms  
+**Trade-off**: More complex access patterns, but better performance at scale  
+**SRE insight**: NoSQL requires thinking in access patterns, not entities — a mindset shift from traditional databases. Getting this right upfront prevents costly refactors later.
 
 ### Lambda Cold Start Optimization
-**Challenge**: Initial invocations were 2-3 seconds
-**Solution**: Moved boto3 client initialization outside handler, reduced package size
-**Result**: Cold starts now <500ms
-**Learning**: Always profile with CloudWatch Logs Insights before blindly optimizing
+**Challenge**: Initial invocations were 2-3 seconds  
+**Solution**: Moved boto3 client initialization outside handler, reduced package size  
+**Result**: Cold starts now <500ms  
+**Takeaway**: Always profile with CloudWatch Logs Insights before blindly optimizing
 
 ### Infrastructure as Code Approach
-**Decision**: Terraform modules over Console Clicks
-**Why**: Reproducible environments, version-controlled infrastructure
-**Impact**: Can spin up complete environment in 10 minutes
+**Decision**: Terraform modules over Console Clicks  
+**Why**: Reproducible environments, version-controlled infrastructure  
+**Impact**: Can spin up complete environment in 10 minutes  
 **Learning**: Modularize Terraform code for reusability across projects
 
 ## Production Enhancements
